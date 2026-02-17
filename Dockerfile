@@ -23,6 +23,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # Копируем проект
 COPY . .
 
-# Если используешь Alembic, миграции лучше прогонять перед стартом (через скрипт)
-# Но для простого запуска хватит uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+# Запускаем миграции Alembic, а затем сам сервер
+CMD sh -c "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000"
+
