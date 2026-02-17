@@ -9,3 +9,5 @@ services:
       # Связываем папку data на твоем компе с папкой /app/data в контейнере
       - ./data:/app/data
     restart: always
+    command: >
+      sh -c "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000"
