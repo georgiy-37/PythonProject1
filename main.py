@@ -6,8 +6,12 @@ from schemas import BookingCreate, BookingOut
 from database import get_db
 from sqlalchemy.orm import selectinload
 from typing import Annotated
+from fastapi.responses import RedirectResponse
 from schemas import TableOut # Не забудь импорт
 app = FastAPI(title="Restaurant Booking")
+@app.get("/", include_in_schema=False)
+async def redirect_to_docs():
+    return RedirectResponse(url="/docs")
 @app.post("/tables", response_model=TableOut)
 async def create_table(number: int, capacity: int, db: AsyncSession = Depends(get_db)):
     new_table = Table(number=number, capacity=capacity)

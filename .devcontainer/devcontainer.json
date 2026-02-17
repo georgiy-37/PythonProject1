@@ -5,9 +5,15 @@
     "workspaceFolder": "/app",
     "customizations": {
         "codespaces": {
-            "openPorts": [8000]
+            "openPorts": [
+                {
+                    "port": 8000,
+                    "label": "Swagger UI",
+                    "onAutoForward": "openBrowser",
+                    "visibility": "public"
+                }
+            ]
         }
     },
-
-    "postStartCommand": "docker-compose up -d"
+    "postCreateCommand": "docker-compose up -d"
 }
