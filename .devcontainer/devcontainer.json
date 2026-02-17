@@ -1,0 +1,10 @@
+{
+  "name": "Python Project",
+  "portsAttributes": {
+    "8000": {
+      "label": "FastAPI Swagger",
+      "onAutoForward": "openBrowser",
+      "visibility": "public"
+    }
+  }
+}
