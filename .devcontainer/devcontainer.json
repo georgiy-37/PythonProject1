@@ -1,8 +1,6 @@
 {
     "name": "PythonProject1",
     "dockerComposeFile": "../docker-compose.yml",
-    "service": "app",
-    "workspaceFolder": "/app",
     "customizations": {
         "codespaces": {
             "openPorts": [
