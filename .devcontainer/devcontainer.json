@@ -1,10 +1,13 @@
 {
-  "name": "Python Project",
-  "portsAttributes": {
-    "8000": {
-      "label": "FastAPI Swagger",
-      "onAutoForward": "openBrowser",
-      "visibility": "public"
-    }
-  }
+    "name": "PythonProject1",
+    "dockerComposeFile": "../docker-compose.yml",
+    "service": "app",
+    "workspaceFolder": "/app",
+    "customizations": {
+        "codespaces": {
+            "openPorts": [8000]
+        }
+    },
+
+    "postStartCommand": "docker-compose up -d"
 }
