@@ -1,0 +1,28 @@
+# Игнорируем всё внутри папки data
+data/*
+
+# Но не игнорируем файл .gitkeep, чтобы папка сохранилась в Git
+!data/.gitkeep
+# Виртуальное окружение
+venv/
+.venv/
+env/
+bin/
+lib/
+
+# Кэш Python
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Переменные окружения (секреты)
+.env
+
+# IDE (VS Code, PyCharm)
+.vscode/
+.idea/
+*.swp
+
+# Логи
+*.log
