@@ -9,6 +9,9 @@ from typing import Annotated
 from fastapi.responses import RedirectResponse
 from schemas import TableOut # Не забудь импорт
 app = FastAPI(title="Restaurant Booking")
+from fastapi.middleware.cors import CORSMiddleware
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+
 @app.get("/", include_in_schema=False)
 async def redirect_to_docs():
     return RedirectResponse(url="/docs")
