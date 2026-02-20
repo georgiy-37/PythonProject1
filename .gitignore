@@ -4,8 +4,6 @@ data/*
 # Но не игнорируем файл .gitkeep, чтобы папка сохранилась в Git
 !data/.gitkeep
 # Виртуальное окружение
-venv/
-.venv/
 env/
 bin/
 lib/
