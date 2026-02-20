@@ -26,6 +26,7 @@ class BookingOut(BaseModel):
     start_time: datetime
     end_time: datetime
     table: TableOut
+    guests_count: int
     class Config: from_attributes = True
 class UserCreate(BaseModel):
     username: str
