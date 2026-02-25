@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import relationship, DeclarativeBase
 class Base(DeclarativeBase): pass
 class User(Base):
@@ -6,6 +6,7 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     username = Column(String, unique=True, nullable=False)
     bookings = relationship("Booking", back_populates="user")
+    is_admin = Column(Boolean, default=False)
 class Table(Base):
     __tablename__ = "tables"
     id = Column(Integer, primary_key=True)

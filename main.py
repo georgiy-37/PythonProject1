@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, Query
+from fastapi import FastAPI, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_, or_
 from models import Booking, Table, User
@@ -9,14 +9,25 @@ from typing import Annotated
 from fastapi.responses import RedirectResponse
 from schemas import TableOut # Не забудь импорт
 app = FastAPI(title="Restaurant Booking")
+from fastapi.security import OAuth2PasswordBearer
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 from fastapi.middleware.cors import CORSMiddleware
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
-
+async def get_current_admin(token: str = Depends(oauth2_scheme)):
+    # Пока мы не настроили JWT, просто создадим условие
+    # В будущем здесь будет логика проверки токена
+    is_admin = True # Временно для теста
+    if token != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Только для администраторов"
+        )
+    return is_admin
 @app.get("/", include_in_schema=False)
 async def redirect_to_docs():
     return RedirectResponse(url="/docs")
 @app.post("/tables", response_model=TableOut)
-async def create_table(number: int, capacity: int, db: AsyncSession = Depends(get_db)):
+async def create_table(number: int, capacity: int, db: AsyncSession = Depends(get_db), admin: bool = Depends(get_current_admin)):
     new_table = Table(number=number, capacity=capacity)
     db.add(new_table)
     await db.commit()
@@ -56,7 +67,7 @@ async def create_booking(data: BookingCreate, db: AsyncSession = Depends(get_db)
     return new_booking
 # 1. Удаление бронирования
 @app.delete("/bookings/{booking_id}")
-async def cancel_booking(booking_id: int, db: AsyncSession = Depends(get_db)):
+async def cancel_booking(booking_id: int, db: AsyncSession = Depends(get_db), admin: bool = Depends(get_current_admin)):
     query = select(Booking).where(Booking.id == booking_id)
     result = await db.execute(query)
     booking = result.scalars().first()
@@ -100,7 +111,7 @@ async def create_user(username: str, db: AsyncSession = Depends(get_db)):
 async def update_table(
         table_id: int,
         capacity: Annotated[int, Query(ge=1, le=20)],  # Валидация: от 1 до 20 мест
-        db: AsyncSession = Depends(get_db)
+        db: AsyncSession = Depends(get_db), admin: bool = Depends(get_current_admin)
 ):
     # 1. Ищем стол
     query = select(Table).where(Table.id == table_id)
