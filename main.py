@@ -1,28 +1,48 @@
 from fastapi import FastAPI, Depends, HTTPException, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_, or_
-from models import Booking, Table, User
+from models import Booking, Table, User, Base
+from contextlib import asynccontextmanager
+
 from schemas import BookingCreate, BookingOut
-from database import get_db
+from database import get_db, engine
 from sqlalchemy.orm import selectinload
 from typing import Annotated
 from fastapi.responses import RedirectResponse
 from schemas import TableOut # Не забудь импорт
-app = FastAPI(title="Restaurant Booking")
-from fastapi.security import OAuth2PasswordBearer
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Эта магия создает таблицы в booking.db при запуске сервера
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    yield
+app = FastAPI(title="Restaurant Booking",lifespan=lifespan)
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 from fastapi.middleware.cors import CORSMiddleware
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+@app.post("/token")
+async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    # Здесь мы проверяем «admin» и «password»
+    if form_data.username == "admin" and form_data.password == "password":
+        # В реальном приложении здесь генерируется JWT токен
+        return {"access_token": "admin", "token_type": "bearer"}
+
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Неверный логин или пароль",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
 async def get_current_admin(token: str = Depends(oauth2_scheme)):
     # Пока мы не настроили JWT, просто создадим условие
     # В будущем здесь будет логика проверки токена
-    is_admin = True # Временно для теста
+
     if token != "admin":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Только для администраторов"
         )
-    return is_admin
+    return True
 @app.get("/", include_in_schema=False)
 async def redirect_to_docs():
     return RedirectResponse(url="/docs")
