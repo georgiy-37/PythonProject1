@@ -8,14 +8,9 @@ services:
     volumes:
       # МАГИЯ: Синхронизируем весь код (из текущей папки в /app в контейнере)
       - .:/app
-      # База данных отдельно
-      - ./data:/app/data
     restart: always
     # Объединяем миграции и запуск с флагом --reload
+    # В docker-compose.yml
     command: >
-      sh -c "alembic upgrade head && 
-      echo '---------------------------------------------------------' &&
-      echo 'SWAGGER ДОСТУПЕН ПО ССЫЛКЕ НИЖЕ:' &&
-      echo 'https://'${CODESPACE_NAME}'-8000.app.github.dev/docs' &&
-      echo '---------------------------------------------------------' &&
-      uvicorn main:app --host 0.0.0.0 --port 8000"
+      sh -c "mkdir -p data && chmod 777 data && alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000"
+    
