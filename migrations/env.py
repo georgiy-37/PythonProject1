@@ -65,7 +65,8 @@ async def run_async_migrations() -> None:
     section = config.get_section(config.config_ini_section, {})
 
     # ПЕРЕОПРЕДЕЛЯЕМ путь к базе, чтобы он совпадал с приложением
-    section["sqlalchemy.url"] = "sqlite+aiosqlite:///./data/booking.db"
+    section["sqlalchemy.url"] = "sqlite+aiosqlite:////app/data/booking.db"
+
 
     connectable = async_engine_from_config(
         section,  # используем обновленную секцию
