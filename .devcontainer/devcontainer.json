@@ -3,7 +3,14 @@
     "dockerComposeFile": "../docker-compose.yml",
     "service": "app",
     "workspaceFolder": "/app",
+    "shutdownAction": "stopCompose",
     "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-azuretools.vscode-docker"
+            ]
+        },
         "codespaces": {
             "openPorts": [
                 {
@@ -13,6 +20,13 @@
                     "visibility": "public"
                 }
             ]
+        }
+    },
+    "portsAttributes": {
+        "8000": {
+            "label": "Swagger UI",
+            "onAutoForward": "openBrowser",
+            "visibility": "public"
         }
     }
 }

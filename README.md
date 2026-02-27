@@ -1,5 +1,1 @@
-Нажмите кнопку Code -> Codespaces -> Create codespace
-
-Подождите 30 секунд (проект запустится автоматически)
-
-Перейдите по http://localhost:8000/docs
+[Открыть Swagger UI (только при запущенном Codespace)](https://${codespace_name}-8000.app.github.dev/docs)

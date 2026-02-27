@@ -1,16 +1,18 @@
-
 services:
   app:
     build: .
-    ports:
-      - "8000:8000"
+    # volumes оставляем только один, чтобы не было конфликтов прав
     volumes:
-      # МАГИЯ: Синхронизируем весь код (из текущей папки в /app в контейнере)
       - .:/app
-    restart: always
-    # Объединяем миграции и запуск с флагом --reload
-    # В docker-compose.yml
-    # Временно заменяем всё это на sleep
-    command: sleep infinity
-    # restart: always  <-- Закомментируй это пока что!
+    # Убираем sleep и ставим автоматику
+    command: >
+      sh -c "mkdir -p /app/data && 
+      chmod 777 /app/data && 
+      alembic upgrade head && 
+      echo '---------------------------------------------------------' &&
+      echo 'SWAGGER ДОСТУПЕН ПО ССЫЛКЕ НИЖЕ:' &&
+      echo 'https://$${CODESPACE_NAME}-8000.app.github.dev/docs' &&
+      echo '---------------------------------------------------------' &&
+      uvicorn main:app --host 0.0.0.0 --port 8000"
+
     
