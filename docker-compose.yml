@@ -10,6 +10,7 @@ services:
     restart: always
     # Объединяем миграции и запуск с флагом --reload
     # В docker-compose.yml
-    command: >
-      sh -c "mkdir -p data && chmod 777 data && alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000"
+    # Временно заменяем всё это на sleep
+    command: sleep infinity
+    # restart: always  <-- Закомментируй это пока что!
     
